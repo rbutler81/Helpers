@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/CSVUtils/CSVUtils.iml" filepath="$PROJECT_DIR$/CSVUtils/CSVUtils.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ConfigFileReader/ConfigFileReader.iml" filepath="$PROJECT_DIR$/ConfigFileReader/ConfigFileReader.iml" />
       <module fileurl="file://$PROJECT_DIR$/CustomExceptions/CustomExceptions.iml" filepath="$PROJECT_DIR$/CustomExceptions/CustomExceptions.iml" />
       <module fileurl="file://$PROJECT_DIR$/Helpers.iml" filepath="$PROJECT_DIR$/Helpers.iml" />
     </modules>
