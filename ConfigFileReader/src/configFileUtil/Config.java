@@ -1,4 +1,4 @@
-package configFileReader;
+package configFileUtil;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -8,12 +8,42 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ConfigFileReader {
+public class Config {
 
-    public static Map<String,List<String>> fromFile(String str) {
+    private Map<String,List<String>> params;
+
+    public Map<String, List<String>> getParams() {
+        return params;
+    }
+
+    private Config(Map<String,List<String>> params) {
+        this.params = params;
+    }
+
+    public boolean hasParam(String s) {
+        return params.containsKey(s);
+    }
+
+    public List<String> getParam(String s) {
+        return params.get(s);
+    }
+
+    public List<Integer> getParamAsInt(String s) {
+        List<String> l = params.get(s);
+        List<Integer> r = new ArrayList<>();
+        for (String p : l) {
+            r.add(Integer.parseInt(p));
+        }
+        return r;
+    }
+
+    public Integer getSingleParamAsInt(String s) {
+        return getParamAsInt(s).get(0);
+    }
+
+    public static Config readIniFile(String str) {
 
         Map<String,List<String>> configParams = new HashMap<>();
-
         try {
 
             BufferedReader br = new BufferedReader(new FileReader(str));
@@ -24,7 +54,7 @@ public class ConfigFileReader {
             while (line != null) {
                 line = br.readLine();
 
-                if (line.startsWith("#")) {
+                if ((line != null) && line.startsWith("#")) {
 
                     line = line.substring(1);
                     int equals = line.indexOf("=");
@@ -51,7 +81,7 @@ public class ConfigFileReader {
             e.printStackTrace();
         }
 
-        return configParams;
+        return new Config(configParams);
 
     }
 
