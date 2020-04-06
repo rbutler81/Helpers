@@ -41,6 +41,8 @@ public class Config {
         return getParamAsInt(s).get(0);
     }
 
+    public String getSingleParamAsString(String s) { return params.get(s).get(0); }
+
     public static Config readIniFile(String str) {
 
         Map<String,List<String>> configParams = new HashMap<>();
