@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/ConfigFileReader/ConfigFileReader.iml" filepath="$PROJECT_DIR$/ConfigFileReader/ConfigFileReader.iml" />
       <module fileurl="file://$PROJECT_DIR$/CustomExceptions/CustomExceptions.iml" filepath="$PROJECT_DIR$/CustomExceptions/CustomExceptions.iml" />
       <module fileurl="file://$PROJECT_DIR$/Helpers.iml" filepath="$PROJECT_DIR$/Helpers.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Logger/Logger.iml" filepath="$PROJECT_DIR$/Logger/Logger.iml" />
     </modules>
   </component>
 </project>
