@@ -2,7 +2,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Log {
@@ -15,6 +18,8 @@ public class Log {
 	private File archivePath;
 	private String filePrefix;
 	private String fileExtension;
+	DateFormat dateFormat = null;
+
 	
 	public Log(LogConfig config, String path, String fileName, String firstLine) throws IOException {
 		
@@ -22,13 +27,15 @@ public class Log {
 		this.path = path;
 		this.fileName = fileName;
 		this.firstLine = firstLine;
-		
+
+		dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
+
 		logFile = new File(path.concat(fileName));
 		archivePath = new File(path.concat("archive\\"));
 		
 		filePrefix = fileName.substring(0, fileName.indexOf("."));
 		fileExtension = fileName.substring(fileName.indexOf("."));
-		
+
 		if (!logFile.exists()) {
 			try {
 				logFile.createNewFile();
@@ -43,13 +50,11 @@ public class Log {
 	public void appendLine(String s) throws IOException {
 		
 		if (logFile.length() < config.getMaxLogSizeBytes()) {	
-			
 			try {
 				writeToLog(s);
 			}catch (IOException e) {
 				throw e;
 			}
-			
 		}
 		
 		else {
@@ -106,12 +111,14 @@ public class Log {
 	
 	private void writeToLog(String s) throws IOException {
 		
-		BufferedWriter br = null;
-		
+		BufferedWriter bw = null;
+
 		try {
 		    FileWriter fstream = new FileWriter(logFile.toString(), true);
-		    br = new BufferedWriter(fstream);
-		    br.write(s + "\n");
+		    bw = new BufferedWriter(fstream);
+		    Date date = new Date();
+		    String d = dateFormat.format(date);
+		    bw.write(d + ": " + s + "\n");
 		}
 
 		catch (IOException e) {
@@ -119,13 +126,10 @@ public class Log {
 		}
 
 		finally {
-		    if(br != null) {
-		        br.close();
+		    if(bw != null) {
+		        bw.close();
 		    }
 		}
 		
 	}
-	
-	
-	
 }

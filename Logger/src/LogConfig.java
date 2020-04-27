@@ -5,15 +5,13 @@ import java.util.List;
 
 public class LogConfig {
 
-	private int port;
 	private int maxLogSizeBytes;
 	private int oldLogsToKeep;
 	
 	
-	public LogConfig(int port, int maxLogSizeBytes, int oldLogsToKeep) throws ConfigException {
+	public LogConfig(int maxLogSizeBytes, int oldLogsToKeep) throws ConfigException {
 		
 		try {
-			this.setPort(port);
 			this.setMaxLogSizeBytes(maxLogSizeBytes);
 			this.setOldLogsToKeep(oldLogsToKeep);
 		}
@@ -22,24 +20,11 @@ public class LogConfig {
 		}
 		
 	}
-	
-	public int getPort() {
-		return port;
-	}
-	public LogConfig setPort(int port) throws ConfigException {
-		
-		if (port > 0 && port <= 65535) {
-			this.port = port;
-			return this;
-		}
-		else {
-			throw new ConfigException("Port must be between 0 - 65535");
-		}
-		
-	}
+
 	public int getMaxLogSizeBytes() {
 		return maxLogSizeBytes;
 	}
+
 	public LogConfig setMaxLogSizeBytes(int maxLogSizeBytes) throws ConfigException {
 		
 		if (maxLogSizeBytes > 0) {
@@ -53,6 +38,7 @@ public class LogConfig {
 	public int getOldLogsToKeep() {
 		return oldLogsToKeep;
 	}
+
 	public LogConfig setOldLogsToKeep(int oldLogsToKeep) throws ConfigException {
 		
 		if (oldLogsToKeep >= 1) {
@@ -63,50 +49,4 @@ public class LogConfig {
 			throw new ConfigException("oldLogsToKeep must be greater to, or equal to 1");
 		}
 	}
-	
-	static LogConfig fromFile(String str) throws ConfigException{
-		
-		int port = 0;
-		int maxBytes = 0;
-		int maxOld = 0;		
-		
-		try {
-			
-			BufferedReader br = new BufferedReader(new FileReader(str));
-			String line = br.readLine();
-			List<String> p = new ArrayList<String>();
-			p.add(line);
-			
-			
-		
-			while (line != null) {
-				line = br.readLine();
-				p.add(line);
-			}
-			
-			for (String s : p) {
-				
-				if (s != null) {
-				
-					if (s.startsWith("#port=")) {
-							port = Integer.parseInt(s.substring(6));
-						}
-						else if (s.startsWith("#maxLogSizeBytes=")) {
-							maxBytes = Integer.parseInt(s.substring(17));
-						}
-						else if (s.startsWith("#oldLogsToKeep=")) {
-							maxOld = Integer.parseInt(s.substring(15));
-						}
-					
-					}
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return new LogConfig(port, maxBytes, maxOld);
-		
-	}
-	
 }
