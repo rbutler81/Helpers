@@ -35,27 +35,27 @@ public class Log {
 		logFile = new File(path.concat(fileName));
 		archivePath = new File(path.concat("archive\\"));
 		
-		filePrefix = fileName.substring(0, fileName.indexOf("."));
-		fileExtension = fileName.substring(fileName.indexOf("."));
+		filePrefix = fileName.substring(0, fileName.lastIndexOf("."));
+		fileExtension = fileName.substring(fileName.lastIndexOf("."));
 
 		if (!logFile.exists()) {
 			try {
 				logFile.createNewFile();
 				appendLine(firstLine);
 			}catch (IOException e) {
-				throw e;
+				System.out.println(e);
 			}
 		}
 		
 	}
 	
-	public void appendLine(String s) throws IOException {
+	public void appendLine(String s) {
 		
 		if (logFile.length() < config.getMaxLogSizeBytes()) {	
 			try {
 				writeToLog(s);
 			}catch (IOException e) {
-				throw e;
+				System.out.println(e);
 			}
 		}
 		
@@ -66,13 +66,17 @@ public class Log {
 				archivePath.mkdir();
 				File old = new File(archivePath.toString() + "\\" + filePrefix + "_0" + fileExtension);
 				logFile.renameTo(old);
-				logFile.createNewFile();
+				try {
+					logFile.createNewFile();
+				} catch (Exception e) {
+					System.out.println(e);
+				}
 				
 				try {
 					writeToLog(firstLine);
 					writeToLog(s);
 				}catch (IOException e) {
-					throw e;
+					System.out.println(e);
 				}
 			}
 			
@@ -96,13 +100,17 @@ public class Log {
 				}
 				
 				logFile.renameTo(new File(archivePath.toString() + "\\" + filePrefix + "_0" + fileExtension));
-				logFile.createNewFile();
+				try {
+					logFile.createNewFile();
+				} catch (Exception e){
+					System.out.println(e);
+				}
 				
 				try {
 					writeToLog(firstLine);
 					writeToLog(s);
 				}catch (IOException e) {
-					throw e;
+					System.out.println(e);
 				}
 				
 			}

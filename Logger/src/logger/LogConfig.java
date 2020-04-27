@@ -15,7 +15,6 @@ public class LogConfig {
 		catch (ConfigException e) {
 			throw e;
 		}
-		
 	}
 
 	public int getMaxLogSizeBytes() {
