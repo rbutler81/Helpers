@@ -9,6 +9,10 @@ import java.net.SocketException;
 
 public class RecvObjectUdp<T> {
 
+    public T receive(int port) {
+        return processPacketCastToObject(receivePacket(port));
+    }
+
     private <T> T processPacketCastToObject(DatagramPacket packet) {
 
         byte[] recvData = new byte[packet.getLength()];
