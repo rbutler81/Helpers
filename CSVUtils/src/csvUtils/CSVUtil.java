@@ -10,7 +10,9 @@ import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CSVUtil {
 
@@ -90,7 +92,27 @@ public class CSVUtil {
 			bw.write(line);
 		}
 		bw.close();
-	} 
+	}
+
+	public static List<Map<String,String>> collectDataByHeaderRow(List<String[]> data) {
+
+		// collect header row
+		List<String> headers = new ArrayList<>();
+		for (String s : data.get(0)) {
+			headers.add(s);
+		}
+
+		// loop through csv data and create the list of maps structure
+		List<Map<String,String>> r = new ArrayList<>();
+		for (int i=1; i < data.size(); i++) {
+			Map<String,String> m = new HashMap<>();
+			for (int j=0; j < data.get(i).length; j++) {
+				m.put(headers.get(j), data.get(i)[j]);
+			}
+			r.add(m);
+		}
+		return r;
+	}
 	
 	@SuppressWarnings("unchecked")
 	public static void writeObject(List<? extends CSVWriter> l, String file, String separator) throws IOException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
