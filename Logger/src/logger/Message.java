@@ -1,31 +1,32 @@
 package logger;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Message<T> {
-    private List<T> list;
+    private LinkedList<T> list;
     private ReentrantLock l;
 
     public Message() {
-        list = new ArrayList<>();
-        l = new ReentrantLock();
+        list = new LinkedList<>();
+        l = new ReentrantLock(true);
     }
 
     public T getNextMsg() {
         while (l.isLocked()){}
         l.lock();
-        T m = list.get(0);
-        list.remove(0);
+        T m = list.removeFirst();
         l.unlock();
         return m;
     }
 
     public Message<T> addMsg(T s) {
-        MessageWorkerThread<T> mwt = new MessageWorkerThread<>(list, s, l);
-        Thread t = new Thread(mwt);
-        t.start();
+        while (l.isLocked());
+        l.lock();
+        list.add(s);
+        l.unlock();
         return this;
     }
     
@@ -35,5 +36,17 @@ public class Message<T> {
         boolean r = list.isEmpty();
     	l.unlock();
     	return r;
+    }
+
+    public void waitUntilNotifiedOrListNotEmpty() {
+        synchronized (this) {
+            while (isEmpty()) {
+                try {
+                    this.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

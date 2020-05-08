@@ -143,17 +143,10 @@ public class LogWorkerThread implements Runnable {
 
         while (true) {
 
-            synchronized (msg) {
-                try {
-                    msg.wait(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            msg.waitUntilNotifiedOrListNotEmpty();
 
-                while (!msg.isEmpty()) {
-                    appendLine(msg.getNextMsg());
-                }
-
+            while (!msg.isEmpty()) {
+                appendLine(msg.getNextMsg());
             }
         }
     }

@@ -17,17 +17,23 @@ public class Logger {
     }
 
     public String log(String s) {
-        if (logSetup != null) {
-            String toLog = dateFormat.format(new Date());
-            if (instanceName != null) {
-                toLog = toLog + " {" + instanceName + "}: " + s;
-            } else {
-                toLog = toLog + ": " + s;
+        String toLog = dateFormat.format(new Date());
+        synchronized (logSetup.getMsg()) {
+            if (logSetup != null) {
+                if (instanceName != null) {
+                    toLog = toLog + " {" + instanceName + "}: " + s;
+                } else {
+                    toLog = toLog + ": " + s;
+                }
+                logSetup.getMsg().addMsg(toLog);
+                logSetup.getMsg().notify();
             }
-            logSetup.getMsg().addMsg(toLog);
-            return toLog;
         }
-        return null;
+        if (logSetup != null) {
+            return toLog;
+        } else {
+            return null;
+        }
     }
 
     public void logAndPrint(String s) {

@@ -9,7 +9,20 @@ import java.net.SocketException;
 
 public class RecvObjectUdp<T> {
 
-    public T receive(int port) {
+    private DatagramSocket serverSocket;
+    private int port;
+
+    public RecvObjectUdp(int port){
+
+        this.port = port;
+        try {
+            serverSocket = new DatagramSocket(port);
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public T receive() {
         return processPacketCastToObject(receivePacket(port));
     }
 
@@ -34,15 +47,6 @@ public class RecvObjectUdp<T> {
     }
 
     private DatagramPacket receivePacket(int port) {
-
-        DatagramSocket serverSocket = null;
-
-        try {
-            serverSocket = new DatagramSocket(port);
-        } catch (SocketException e) {
-            e.printStackTrace();
-            return null;
-        }
 
         DatagramPacket packet = null;
         try {
