@@ -10,7 +10,7 @@ import java.net.InetAddress;
 
 public class SendUdp {
 
-    protected <T extends Serializable> boolean sendObjectTo(String addr, int port, T o) {
+    public boolean sendObjectTo(String addr, int port) {
 
         boolean r = false;
 
@@ -23,7 +23,7 @@ public class SendUdp {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(baos);
             oos.flush();
-            oos.writeObject(o);
+            oos.writeObject(this);
             oos.flush();
             byte[] dataToSend = baos.toByteArray();
             oos.close();
