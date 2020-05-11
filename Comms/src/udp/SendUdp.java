@@ -8,7 +8,10 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-public class SendUdp {
+public class SendUdp implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    protected long msgId;
 
     public boolean sendObjectTo(String addr, int port) {
 
@@ -35,6 +38,7 @@ public class SendUdp {
             clientSocket.send(packet);
 
             r = true;
+
 
         } catch (IOException e) {
             e.printStackTrace();

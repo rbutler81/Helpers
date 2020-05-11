@@ -4,8 +4,7 @@ import logger.LoggerBase;
 import logger.LoggerInstance;
 import threads.Message;
 import udp.UdpObjectServerThread;
-import udp.heartbeat.HeartBeatStatus;
-import udp.heartbeat.UdpHeartBeat;
+
 
 public class HeartBeatWorkerThread implements Runnable {
 
