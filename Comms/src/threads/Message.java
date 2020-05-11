@@ -1,8 +1,6 @@
-package logger;
+package threads;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Message<T> {
@@ -39,14 +37,27 @@ public class Message<T> {
     }
 
     public void waitUntilNotifiedOrListNotEmpty() {
+        waitUntilNotifiedOrListNotEmpty(0);
+    }
+
+    public void waitUntilNotifiedOrListNotEmpty(int timeout) {
         synchronized (this) {
             while (isEmpty()) {
                 try {
-                    this.wait();
+                    this.wait(timeout);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                if (timeout > 0) break;
             }
         }
     }
+
+    public void addMsgAndNotify(T newMsg) {
+        synchronized (this) {
+            addMsg(newMsg);
+            this.notify();
+        }
+    }
+
 }
