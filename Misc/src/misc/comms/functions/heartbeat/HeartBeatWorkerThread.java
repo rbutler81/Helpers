@@ -1,7 +1,7 @@
-package udp.heartbeat;
+package misc.comms.functions.heartbeat;
 
 import logger.LoggerBase;
-import logger.LoggerInstance;
+import logger.Logger;
 import threads.Message;
 import udp.UdpObjectServerThread;
 
@@ -11,7 +11,7 @@ public class HeartBeatWorkerThread implements Runnable {
     Message<HeartBeatStatus> heartBeatStatusMsg;
     HeartBeatStatus heartBeatStatus;
     Message<UdpHeartBeat> heartBeatMsg;
-    LoggerInstance log;
+    Logger log;
     String addr;
     int port;
     int timeout;
@@ -23,11 +23,11 @@ public class HeartBeatWorkerThread implements Runnable {
         this.heartBeatStatusMsg = new Message<>();
         heartBeatStatus = new HeartBeatStatus(false);
         this.heartBeatMsg = new Message<>();
-        this.log = new LoggerInstance(lb);
+        this.log = new Logger(lb);
 
     }
 
-    public LoggerInstance getLog() {
+    public Logger getLog() {
         return log;
     }
 

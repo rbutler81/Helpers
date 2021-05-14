@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 public class LogWorkerThread implements Runnable {
@@ -22,11 +23,11 @@ public class LogWorkerThread implements Runnable {
     private String filePrefix;
     private String fileExtension;
 
-    public LogWorkerThread(LogConfig config, String path, String fileName, String firstLine, Message<String> msg) {
+    public LogWorkerThread(LogConfig config, Message<String> msg) {
         this.config = config;
-        this.path = path;
-        this.fileName = fileName;
-        this.firstLine = firstLine;
+        this.path = config.getPath();
+        this.fileName = config.getLogFileName();
+        this.firstLine = config.getTopLine();
         this.msg = msg;
 
         logFile = new File(path.concat(fileName));
@@ -38,19 +39,21 @@ public class LogWorkerThread implements Runnable {
         if (!logFile.exists()) {
             try {
                 logFile.createNewFile();
-                appendLine(firstLine);
+                List<String> ls = new LinkedList<>();
+                ls.add(firstLine);
+                appendLine(ls);
             }catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public void appendLine(String s) {
+    public void appendLine(List<String> ls) {
 
         if (logFile.length() < config.getMaxLogSizeBytes()) {
             try {
-                writeToLog(s);
-            }catch (IOException e) {
+                writeToLog(ls);
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -70,7 +73,7 @@ public class LogWorkerThread implements Runnable {
 
                 try {
                     writeToLog(firstLine);
-                    writeToLog(s);
+                    writeToLog(ls);
                 }catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -104,15 +107,12 @@ public class LogWorkerThread implements Runnable {
 
                 try {
                     writeToLog(firstLine);
-                    writeToLog(s);
+                    writeToLog(ls);
                 }catch (IOException e) {
                     e.printStackTrace();
                 }
-
             }
-
         }
-
     }
 
     private void writeToLog(String s) throws IOException {
@@ -120,17 +120,33 @@ public class LogWorkerThread implements Runnable {
         BufferedWriter bw = null;
 
         try {
-            FileWriter fstream = new FileWriter(logFile.toString(), true);
-            bw = new BufferedWriter(fstream);
-            Date date = new Date();
+            FileWriter fStream = new FileWriter(logFile.toString(), true);
+            bw = new BufferedWriter(fStream);
             bw.write(s + "\n");
-        }
-
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            if(bw != null) {
+                bw.close();
+            }
         }
 
-        finally {
+    }
+
+    private void writeToLog(List<String> ls) throws IOException {
+
+        BufferedWriter bw = null;
+
+        try {
+            FileWriter fStream = new FileWriter(logFile.toString(), true);
+            bw = new BufferedWriter(fStream);
+            int len = ls.size();
+            for (int i = 0; i < len; i++) {
+                bw.write(ls.remove(0) + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
             if(bw != null) {
                 bw.close();
             }
@@ -146,7 +162,8 @@ public class LogWorkerThread implements Runnable {
             msg.waitUntilNotifiedOrListNotEmpty();
 
             while (!msg.isEmpty()) {
-                appendLine(msg.getNextMsg());
+                List<String> stringsToLog = msg.removeAll();
+                appendLine(stringsToLog);
             }
         }
     }

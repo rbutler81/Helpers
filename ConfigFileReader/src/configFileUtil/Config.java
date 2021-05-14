@@ -2,6 +2,7 @@ package configFileUtil;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,12 +12,14 @@ import java.util.Map;
 public class Config {
 
     private Map<String,List<String>> params;
+    private String iniFile = null;
 
     public Map<String, List<String>> getParams() {
         return params;
     }
 
-    private Config(Map<String,List<String>> params) {
+    private Config(Map<String,List<String>> params, String iniFile) {
+        this.iniFile = iniFile;
         this.params = params;
     }
 
@@ -37,13 +40,31 @@ public class Config {
         return r;
     }
 
-    public Integer getSingleParamAsInt(String s) {
-        return getParamAsInt(s).get(0);
+    public int getSingleParamAsInt(String s) { return getParamAsInt(s).get(0); }
+
+    public int getSingleParamAsInt(String s, int from, int to) throws ParamRangeException {
+        int value = getParamAsInt(s).get(0);
+
+        if ((value < from) || (value > to)) {
+            throw new ParamRangeException(s,from,value,to);
+        } else {
+            return value;
+        }
+    }
+
+    public int getSingleParamAsInt(String s, int smallest) throws ParamRangeException {
+        int value = getParamAsInt(s).get(0);
+
+        if (value < smallest) {
+            throw new ParamRangeException(s,value,smallest);
+        } else {
+            return value;
+        }
     }
 
     public String getSingleParamAsString(String s) { return params.get(s).get(0); }
 
-    public static Config readIniFile(String str) {
+    public static Config readIniFile(String str) throws IOException {
 
         Map<String,List<String>> configParams = new HashMap<>();
         try {
@@ -56,9 +77,8 @@ public class Config {
             while (line != null) {
                 line = br.readLine();
 
-                if ((line != null) && line.startsWith("#")) {
+                if ((line != null) && !line.startsWith("#") && line.contains("=") && (line.length() > 1)) {
 
-                    line = line.substring(1);
                     int equals = line.indexOf("=");
                     String key = line.substring(0, equals);
                     String value = line.substring(equals + 1);
@@ -80,10 +100,10 @@ public class Config {
             }
         }
          catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         }
 
-        return new Config(configParams);
+        return new Config(configParams, str);
 
     }
 

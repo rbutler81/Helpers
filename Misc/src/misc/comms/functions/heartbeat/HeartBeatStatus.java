@@ -1,4 +1,4 @@
-package udp.heartbeat;
+package misc.comms.functions.heartbeat;
 
 public class HeartBeatStatus {
 

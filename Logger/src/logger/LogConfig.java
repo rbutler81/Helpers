@@ -4,45 +4,44 @@ public class LogConfig {
 
 	private int maxLogSizeBytes;
 	private int oldLogsToKeep;
+	private String logFileName = null;
+	private String path = null;
+	private String topLine = null;
+	private boolean useTimeStamp;
 	
-	
-	public LogConfig(int maxLogSizeBytes, int oldLogsToKeep) throws ConfigException {
+	public LogConfig(int maxLogSizeBytes, int oldLogsToKeep, String path, String fileName, String topLine, boolean useTimeStamp) {
 		
-		try {
-			this.setMaxLogSizeBytes(maxLogSizeBytes);
-			this.setOldLogsToKeep(oldLogsToKeep);
-		}
-		catch (ConfigException e) {
-			throw e;
-		}
+		this.maxLogSizeBytes = maxLogSizeBytes;
+		this.oldLogsToKeep = oldLogsToKeep;
+		this.logFileName = fileName;
+		this.topLine = topLine;
+		this.useTimeStamp = useTimeStamp;
+		this.path = path;
+
 	}
 
 	public int getMaxLogSizeBytes() {
 		return maxLogSizeBytes;
 	}
 
-	public LogConfig setMaxLogSizeBytes(int maxLogSizeBytes) throws ConfigException {
-		
-		if (maxLogSizeBytes > 0) {
-			this.maxLogSizeBytes = maxLogSizeBytes;
-			return this;
-		}
-		else {
-			throw new ConfigException("maxLogSizeBytes must be greater than 0");
-		}
-	}
 	public int getOldLogsToKeep() {
 		return oldLogsToKeep;
 	}
 
-	public LogConfig setOldLogsToKeep(int oldLogsToKeep) throws ConfigException {
-		
-		if (oldLogsToKeep >= 1) {
-			this.oldLogsToKeep = oldLogsToKeep;
-			return this;
-		}
-		else {
-			throw new ConfigException("oldLogsToKeep must be greater to, or equal to 1");
-		}
+	public String getLogFileName() {
+		return logFileName;
 	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public String getTopLine() {
+		return topLine;
+	}
+
+	public boolean isUseTimeStamp() {
+		return useTimeStamp;
+	}
+
 }

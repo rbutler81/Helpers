@@ -1,6 +1,7 @@
 package threads;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Message<T> {
@@ -16,6 +17,7 @@ public class Message<T> {
         while (l.isLocked()){}
         l.lock();
         T m = list.removeFirst();
+        list.clone();
         l.unlock();
         return m;
     }
@@ -34,6 +36,18 @@ public class Message<T> {
         boolean r = list.isEmpty();
     	l.unlock();
     	return r;
+    }
+
+    public List<T> removeAll() {
+        List<T> r = new LinkedList<>();
+        while (l.isLocked()){}
+        l.lock();
+        int len = list.size();
+        for (int i = 0; i < len; i++) {
+            r.add(list.remove(0));
+        }
+        l.unlock();
+        return r;
     }
 
     public void waitUntilNotifiedOrListNotEmpty() {

@@ -1,4 +1,4 @@
-package udp.heartbeat;
+package misc.comms.functions.heartbeat;
 
 import misc.time.TimeInMillis;
 import udp.SendUdp;
