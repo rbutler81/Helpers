@@ -1,4 +1,4 @@
-package misc.time;
+package com.cimcorp.misc.helpers;
 
 import java.io.Serializable;
 

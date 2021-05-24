@@ -7,8 +7,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="logic" />
     <orderEntry type="module" module-name="Logger" />
-    <orderEntry type="module" module-name="Misc" />
+    <orderEntry type="module" module-name="Miscellaneous" />
   </component>
 </module>

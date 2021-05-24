@@ -8,7 +8,7 @@
       <module fileurl="file://$PROJECT_DIR$/CustomExceptions/CustomExceptions.iml" filepath="$PROJECT_DIR$/CustomExceptions/CustomExceptions.iml" />
       <module fileurl="file://$PROJECT_DIR$/Helpers.iml" filepath="$PROJECT_DIR$/Helpers.iml" />
       <module fileurl="file://$PROJECT_DIR$/Logger/Logger.iml" filepath="$PROJECT_DIR$/Logger/Logger.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Misc/Misc.iml" filepath="$PROJECT_DIR$/Misc/Misc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Miscellaneous/Miscellaneous.iml" filepath="$PROJECT_DIR$/Miscellaneous/Miscellaneous.iml" />
     </modules>
   </component>
 </project>
