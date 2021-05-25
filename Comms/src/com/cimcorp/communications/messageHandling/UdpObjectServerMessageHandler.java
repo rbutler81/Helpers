@@ -22,9 +22,11 @@ public class UdpObjectServerMessageHandler extends UdpObjectServerThread {
         UdpReceiver objectReceiver = null;
         try {
             objectReceiver = new RecvStringUdp(port);
-            LogUtil.checkAndLog(mh.isUsingLogger(),mh.getLogger().getInstanceName() + "listening on port: " + port, mh.getLogger());
+            LogUtil.checkAndLog(mh.getLogger().getInstanceName() + "listening on port: " + port,
+                    mh.getLogger());
         } catch (Throwable t) {
-            LogUtil.checkAndLog(mh.isUsingLogger(), ExceptionUtil.stackTraceToString(t), mh.getLogger());
+            LogUtil.checkAndLog(ExceptionUtil.stackTraceToString(t),
+                    mh.getLogger());
         }
 
         while (true) {
@@ -33,7 +35,8 @@ public class UdpObjectServerMessageHandler extends UdpObjectServerThread {
                 String receivedData = super.listenForObject(objectReceiver);
                 mh.receivedMsg(receivedData);
             } catch (Throwable t) {
-                LogUtil.checkAndLog(mh.isUsingLogger(), ExceptionUtil.stackTraceToString(t), mh.getLogger());
+                LogUtil.checkAndLog(ExceptionUtil.stackTraceToString(t),
+                        mh.getLogger());
             }
         }
 

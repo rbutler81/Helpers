@@ -127,8 +127,7 @@ public class MessageHandler implements Runnable {
                     sendDataMsg(newMessageEvent);
                 }
             } catch (Throwable t) {
-                LogUtil.checkAndLog(isUsingLogger(),
-                        ExceptionUtil.stackTraceToString(t),
+                LogUtil.checkAndLog(ExceptionUtil.stackTraceToString(t),
                         logger);
 
             }
@@ -140,8 +139,7 @@ public class MessageHandler implements Runnable {
         String toSend = newMessageEvent.getData();
         udpSender.send(toSend);
 
-        LogUtil.checkAndLog(isUsingLogger(),
-                "Sent New Message " + newMessageEvent.toString(),
+        LogUtil.checkAndLog("Sent New Message " + newMessageEvent.toString(),
                 logger);
 
         if ((resendDelay > 0) && (resendAttempts > 0)) {
@@ -164,8 +162,7 @@ public class MessageHandler implements Runnable {
         String toSend = messageParser.generateNak();
         udpSender.send(toSend);
 
-        LogUtil.checkAndLog(isUsingLogger(),
-                "Sent New Message " + newMessageEvent.toString(),
+        LogUtil.checkAndLog("Sent New Message " + newMessageEvent.toString(),
                 logger);
     }
 
@@ -174,8 +171,7 @@ public class MessageHandler implements Runnable {
         String toSend = messageParser.generateAck(newMessageEvent.getMsgId());
         udpSender.send(toSend);
 
-        LogUtil.checkAndLog(isUsingLogger(),
-                "Sent New Message " + newMessageEvent.toString(),
+        LogUtil.checkAndLog("Sent New Message " + newMessageEvent.toString(),
                 logger);
     }
 
@@ -186,8 +182,7 @@ public class MessageHandler implements Runnable {
         // received a command
         if (newMsg == ReceivedMessageType.INSTRUCTION) {
 
-            LogUtil.checkAndLog(isUsingLogger(),
-                    messageParser.toString(),
+            LogUtil.checkAndLog(messageParser.toString(),
                     logger);
 
             receiveBufferFromRemote.addMsgAndNotify(new MessageEventData(MessageEvent.RECEIVED_DATA,
@@ -197,8 +192,7 @@ public class MessageHandler implements Runnable {
         // received an ACK
         } else if (newMsg == ReceivedMessageType.ACK) {
 
-            LogUtil.checkAndLog(isUsingLogger(),
-                    messageParser.toString(),
+            LogUtil.checkAndLog(messageParser.toString(),
                     logger);
 
             // check and remove the ACK'd message from the sent message queue
@@ -217,15 +211,13 @@ public class MessageHandler implements Runnable {
         // received a NAK
         } else if (newMsg == ReceivedMessageType.NAK) {
 
-            LogUtil.checkAndLog(isUsingLogger(),
-                    messageParser.toString(),
+            LogUtil.checkAndLog(messageParser.toString(),
                     logger);
 
         // parsing the message failed
         } else if (newMsg == ReceivedMessageType.PARSING_ERROR) {
 
-            LogUtil.checkAndLog(isUsingLogger(),
-                    messageParser.toString(),
+            LogUtil.checkAndLog(messageParser.toString(),
                     logger);
 
             String toSend = messageParser.generateNak();

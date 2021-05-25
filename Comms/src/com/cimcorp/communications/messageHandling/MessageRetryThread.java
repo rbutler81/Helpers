@@ -41,8 +41,7 @@ public class MessageRetryThread implements Runnable {
             unlocked.unlock();
 
         } catch (Throwable t) {
-            LogUtil.checkAndLog(messageHandler.isUsingLogger(),
-                    ExceptionUtil.stackTraceToString(t),
+            LogUtil.checkAndLog(ExceptionUtil.stackTraceToString(t),
                     messageHandler.getLogger());
         }
 

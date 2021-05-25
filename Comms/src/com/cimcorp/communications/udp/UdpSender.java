@@ -1,29 +1,54 @@
 package com.cimcorp.communications.udp;
 
-import java.io.IOException;
-import java.net.*;
+import com.cimcorp.logger.LogUtil;
+import com.cimcorp.logger.Logger;
+import com.cimcorp.logger.LoggerBase;
+import com.cimcorp.misc.helpers.ExceptionUtil;
+
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class UdpSender {
 
     private InetAddress serverAddress;
     private int port;
+    Logger logger;
+    boolean isUsingLogger = false;
 
-    public UdpSender(String destinationAddr, int port) throws IOException, UnknownHostException, SocketException {
+    public UdpSender(String destinationAddr, int port) throws UnknownHostException {
         this.serverAddress = InetAddress.getByName(destinationAddr);
         this.port = port;
     }
 
-    public void send(String s) throws IOException {
+    public UdpSender(String destinationAddr, int port, LoggerBase lb) throws UnknownHostException {
+        this(destinationAddr, port);
+        this.isUsingLogger = true;
+        Logger logger = new Logger(lb, "UdpSender");
+    }
 
-        DatagramSocket udpSocket = new DatagramSocket(this.port);
+    public void send(String s) {
 
-        DatagramPacket p = new DatagramPacket(s.getBytes(),
-                s.getBytes().length,
-                serverAddress,
-                port);
+        DatagramSocket udpSocket = null;
 
-        udpSocket.send(p);
-        udpSocket.close();
+        try {
+
+            udpSocket = new DatagramSocket(this.port);
+
+            DatagramPacket p = new DatagramPacket(s.getBytes(),
+                    s.getBytes().length,
+                    serverAddress,
+                    port);
+
+            udpSocket.send(p);
+
+        } catch (Throwable t) {
+            LogUtil.checkAndLog(ExceptionUtil.stackTraceToString(t),
+                    logger);
+        } finally {
+            udpSocket.close();
+        }
 
         while (!udpSocket.isClosed()) {}
 

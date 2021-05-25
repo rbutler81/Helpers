@@ -2,7 +2,7 @@ package com.cimcorp.communications.messageHandling;
 
 import com.cimcorp.misc.helpers.KeyValuePair;
 
-public class KVPMessageParser implements MessageParser {
+public class KvpMessageParser implements MessageParser {
 
     static final String MESSAGE_HEADER = "msg";
     static final String ACK_HEADER = "ack";
