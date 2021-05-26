@@ -30,9 +30,9 @@ public class TcpSendAndReceive {
         this.retries = retries + 1;
     }
 
-    public TcpSendAndReceive(String destinationIp, int destinationPort, int timeout, int retries, LoggerBase lb) {
+    public TcpSendAndReceive(String destinationIp, int destinationPort, int timeout, int retries, LoggerBase lb, String instanceName) {
         this(destinationIp, destinationPort, timeout, retries);
-        this.logger = new Logger(lb, "TcpSendAndReceive");
+        this.logger = new Logger(lb, instanceName);
     }
 
     public List<Integer> send(String dataToSend) {
@@ -45,7 +45,6 @@ public class TcpSendAndReceive {
         while ((!msgSent || !msgReceived) && (attempt <= retries)) {
 
             Socket socket = null;
-            boolean exceptionOccured = false;
             msgSent = false;
             msgReceived = false;
             bytesReceived = new ArrayList<>();
@@ -67,11 +66,13 @@ public class TcpSendAndReceive {
                 while (!msgReceived) {
 
                     if (input.available() > 0) {
+                        // once data starts arriving, consume it and put it into the list
                         while (input.available() > 0) {
                             bytesReceived.add(input.read());
                         }
                         msgReceived = true;
                     } else {
+                        // if no data has arrived yet, put the thread to sleep then check again
                         Thread.sleep(500);
                         timeoutTimer.isTimedOut();
                     }
@@ -79,32 +80,37 @@ public class TcpSendAndReceive {
 
             } catch (UnknownHostException e) {
                 LogUtil.checkAndLog(ExceptionUtil.stackTraceToString(e), logger);
-                exceptionOccured = true;
-                bytesReceived = new ArrayList<>();
+                LogUtil.checkAndLog("TcpSendAndReceive Could not Connect to "
+                        + destinationIp + ", exiting routine",
+                        logger);
+                attempt = retries + 1;
             } catch (IOException e) {
                 LogUtil.checkAndLog(ExceptionUtil.stackTraceToString(e), logger);
-                exceptionOccured = true;
-                bytesReceived = new ArrayList<>();
+                LogUtil.checkAndLog("TcpSendAndReceive Could not Connect to "
+                                + destinationIp + ", exiting routine",
+                        logger);
+                attempt = retries + 1;
+
             } catch (InterruptedException e) {
                 LogUtil.checkAndLog(ExceptionUtil.stackTraceToString(e), logger);
-                exceptionOccured = true;
-                bytesReceived = new ArrayList<>();
+
             } catch (TimeoutException e) {
                 LogUtil.checkAndLog(ExceptionUtil.stackTraceToString(e), logger);
                 LogUtil.checkAndLog("TcpSendAndReceive Failed, Attempt " + attempt + " of " + retries, logger);
                 attempt = attempt + 1;
-                bytesReceived = new ArrayList<>();
             }
 
-            if (exceptionOccured) {
-                break;
-            } else {
-                try {
+            try {
+                if (socket != null) {
                     socket.close();
-                } catch (IOException e) {
-                    LogUtil.checkAndLog(ExceptionUtil.stackTraceToString(e), logger);
-                    break;
                 }
+            } catch (IOException e) {
+                LogUtil.checkAndLog(ExceptionUtil.stackTraceToString(e), logger);
+            }
+
+            // if a message wasn't, make sure the list is empty
+            if (!msgReceived) {
+                bytesReceived = new ArrayList<>();
             }
 
         }

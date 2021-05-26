@@ -15,9 +15,6 @@ public class MessageHandler implements Runnable {
 
     private static final String THREAD_NAME = "PlcMessageHandler";
 
-    boolean synchronous;
-    boolean responseRequired;
-    boolean outputStringContainsMsgId;
     int localReceivingPort;
     int remoteReceivingPort;
     String remoteIp;
@@ -30,13 +27,9 @@ public class MessageHandler implements Runnable {
     Message<MessageEventData> messagesWaitingForAck = new Message<>();
     MessageParser messageParser;
     boolean usingLogger = false;
-    LoggerBase lb = null;
     Logger logger = null;
 
-    public MessageHandler(boolean synchronous, boolean responseRequired, boolean outputStringContainsMsgId, UdpCommunicationParameters cp, MessageParser messageParser) throws IOException {
-        this.synchronous = synchronous;
-        this.responseRequired = responseRequired;
-        this.outputStringContainsMsgId = outputStringContainsMsgId;
+    public MessageHandler(UdpCommunicationParameters cp, MessageParser messageParser) throws IOException {
         this.localReceivingPort = cp.getLocalReceivingPort();
         this.remoteReceivingPort = cp.getRemoteReceivingPort();
         this.remoteIp = cp.getRemoteIp();
@@ -50,16 +43,12 @@ public class MessageHandler implements Runnable {
         new Thread(this, THREAD_NAME).start();
     }
 
-    public MessageHandler(boolean synchronous, boolean responseRequired, boolean outputStringContainsMsgId, UdpCommunicationParameters cp, MessageParser messageParser, LoggerBase lb) throws IOException {
-        this.synchronous = synchronous;
-        this.responseRequired = responseRequired;
-        this.outputStringContainsMsgId = outputStringContainsMsgId;
+    public MessageHandler(UdpCommunicationParameters cp, MessageParser messageParser, LoggerBase lb) throws IOException {
         this.localReceivingPort = cp.getLocalReceivingPort();
         this.remoteReceivingPort = cp.getRemoteReceivingPort();
         this.remoteIp = cp.getRemoteIp();
         this.resendDelay = cp.getResendDelay();
         this.resendAttempts = cp.getResendAttempts();
-        this.lb = lb;
         this.logger = new Logger(lb, THREAD_NAME);
         this.usingLogger = true;
         this.messageParser = messageParser;

@@ -61,7 +61,7 @@ public class MessageEventData {
                 + " "
                 + KeyValuePair.kVPToString("msgId",msgId).toString();
         if (event == MessageEvent.DATA) {
-            r = r + data;
+            r = r + " " + data;
         }
         return r;
     }
