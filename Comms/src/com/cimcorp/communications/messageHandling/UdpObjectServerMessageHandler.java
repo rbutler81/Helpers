@@ -8,11 +8,11 @@ import com.cimcorp.misc.helpers.ExceptionUtil;
 
 public class UdpObjectServerMessageHandler extends UdpObjectServerThread {
 
-    MessageHandler mh;
+    MessageHandler messageHandler;
 
-    public UdpObjectServerMessageHandler(int port, MessageHandler mh) {
+    public UdpObjectServerMessageHandler(int port, MessageHandler messageHandler) {
         super(port);
-        this.mh = mh;
+        this.messageHandler = messageHandler;
         new Thread(this).start();
     }
 
@@ -22,21 +22,21 @@ public class UdpObjectServerMessageHandler extends UdpObjectServerThread {
         UdpReceiver objectReceiver = null;
         try {
             objectReceiver = new RecvStringUdp(port);
-            LogUtil.checkAndLog(mh.getLogger().getInstanceName() + "listening on port: " + port,
-                    mh.getLogger());
+            LogUtil.checkAndLog(messageHandler.getLogger().getInstanceName() + " listening on port: " + port,
+                    messageHandler.getLogger());
         } catch (Throwable t) {
             LogUtil.checkAndLog(ExceptionUtil.stackTraceToString(t),
-                    mh.getLogger());
+                    messageHandler.getLogger());
         }
 
         while (true) {
 
             try {
                 String receivedData = super.listenForObject(objectReceiver);
-                mh.receivedMsg(receivedData);
+                messageHandler.receivedMsg(receivedData);
             } catch (Throwable t) {
                 LogUtil.checkAndLog(ExceptionUtil.stackTraceToString(t),
-                        mh.getLogger());
+                        messageHandler.getLogger());
             }
         }
 

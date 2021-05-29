@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
-public class BD {
+public class BigDecimalMath {
 
     public static boolean LT(BigDecimal val1, BigDecimal val2) {
         return (val1.compareTo(val2) == -1);

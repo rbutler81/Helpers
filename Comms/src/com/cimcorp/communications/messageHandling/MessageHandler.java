@@ -59,16 +59,41 @@ public class MessageHandler implements Runnable {
         new Thread(this, THREAD_NAME).start();
     }
 
-    public void sendAck(MessageEventData med) {
-        events.addMsgAndNotify(new MessageEventData(MessageEvent.ACK,
-                med.getMsgId(),
-                med.getData()));
+    public int determineNextMsgId(int currentMsgId) {
+
+        int returnVal = 0;
+        int listSize = getMessagesWaitingForAck().size();
+        Message<MessageEventData> unlocked = getMessagesWaitingForAck().lock();
+        currentMsgId = currentMsgId + 1;
+        boolean done = false;
+        while (!done) {
+            boolean exists = false;
+            for (int i = 0; i < listSize; i++) {
+                if (currentMsgId == unlocked.getListWithoutLocking().get(i).getMsgId()){
+                    exists = true;
+                    currentMsgId = currentMsgId + 1;
+                }
+            }
+            if (!exists) {
+                done = true;
+                returnVal = currentMsgId;
+            }
+        }
+        getMessagesWaitingForAck().unlock();
+        return returnVal;
+
     }
 
-    public void sendNak(MessageEventData med) {
+    public void sendAck(MessageEventData messageEventData) {
+        events.addMsgAndNotify(new MessageEventData(MessageEvent.ACK,
+                messageEventData.getMsgId(),
+                messageEventData.getData()));
+    }
+
+    public void sendNak(MessageEventData messageEventData) {
         events.addMsgAndNotify(new MessageEventData(MessageEvent.NAK,
-                med.getMsgId(),
-                med.getData()));
+                messageEventData.getMsgId(),
+                messageEventData.getData()));
     }
 
     public void sendMessage(String dataToSend, int msgId) {

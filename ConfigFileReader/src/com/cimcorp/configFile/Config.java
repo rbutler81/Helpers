@@ -1,6 +1,6 @@
 package com.cimcorp.configFile;
 
-import com.cimcorp.misc.math.BD;
+import com.cimcorp.misc.math.BigDecimalMath;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -131,7 +131,7 @@ public class Config {
         BigDecimal value = getSingleParamAsBigDecimal(s);
         BigDecimal bdGreaterThan = new BigDecimal(greaterThan);
 
-        if (BD.LEQ(value, bdGreaterThan)) {
+        if (BigDecimalMath.LEQ(value, bdGreaterThan)) {
             throw new ParamRangeException(s,value,greaterThan);
         } else {
             return value;
