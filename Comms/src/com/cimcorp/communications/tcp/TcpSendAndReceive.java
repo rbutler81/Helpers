@@ -35,7 +35,7 @@ public class TcpSendAndReceive {
         this.logger = new Logger(lb, instanceName);
     }
 
-    public List<Integer> send(String dataToSend) {
+    public List<Integer> send(String dataToSend, int minBytesToWaitFor) {
 
         int attempt = 1;
         boolean msgSent = false;
@@ -57,8 +57,6 @@ public class TcpSendAndReceive {
                 byte[] data = dataToSend.getBytes();
                 toWrite.write(data);
                 msgSent = true;
-                LogUtil.checkAndLog("Sent: "
-                        + dataToSend, logger);
 
                 InputStream input = socket.getInputStream();
                 Timeout timeoutTimer = new Timeout((long) timeout);
@@ -69,8 +67,11 @@ public class TcpSendAndReceive {
                         // once data starts arriving, consume it and put it into the list
                         while (input.available() > 0) {
                             bytesReceived.add(input.read());
+                            //LogUtil.checkAndLog("Received: " + bytesReceived.size() + " bytes", logger);
                         }
-                        msgReceived = true;
+                        if (bytesReceived.size() >= minBytesToWaitFor) {
+                            msgReceived = true;
+                        }
                     } else {
                         // if no data has arrived yet, put the thread to sleep then check again
                         Thread.sleep(500);

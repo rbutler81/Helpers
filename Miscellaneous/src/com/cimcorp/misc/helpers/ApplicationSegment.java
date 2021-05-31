@@ -26,8 +26,6 @@ public class ApplicationSegment implements Runnable {
             throw e;
         }
 
-        // new comment
-
         lc = new LogConfig(config.getSingleParamAsInt("MaxLogSizeBytes", 5000),
                             config.getSingleParamAsInt("OldLogsToKeep", 1),
                             path,
