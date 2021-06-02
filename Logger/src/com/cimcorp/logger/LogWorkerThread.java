@@ -22,6 +22,7 @@ public class LogWorkerThread implements Runnable {
     private File archivePath;
     private String filePrefix;
     private String fileExtension;
+    private boolean stopThread = false;
 
     public LogWorkerThread(LogConfig config, Message<String> msg) throws IOException {
         this.config = config;
@@ -125,10 +126,15 @@ public class LogWorkerThread implements Runnable {
         }
     }
 
+    public LogWorkerThread stopThread() {
+        this.stopThread = true;
+        return this;
+    }
+
     @Override
     public void run() {
 
-        while (true) {
+        while (!stopThread) {
 
             try {
                 msg.waitUntilNotifiedOrListNotEmpty();

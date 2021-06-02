@@ -11,6 +11,7 @@ public class LoggerBase {
     protected SimpleDateFormat dateFormat = null;
     private Boolean useTimeStamp;
     Message<String> msg;
+    private LogWorkerThread lwt = null;
 
     public LoggerBase(LogConfig config) throws IOException {
 
@@ -22,7 +23,7 @@ public class LoggerBase {
 
         msg = new Message<>();
 
-        LogWorkerThread lwt = new LogWorkerThread(config, msg);
+        lwt = new LogWorkerThread(config, msg);
         Thread t = new Thread(lwt);
         t.start();
     }
@@ -55,6 +56,10 @@ public class LoggerBase {
 
     public void logAndPrint(String s, String instanceName) {
         System.out.println(log(s, instanceName));
+    }
+
+    public void stopThread() {
+        lwt.stopThread();
     }
 
 }

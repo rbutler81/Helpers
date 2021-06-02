@@ -1,11 +1,14 @@
 package com.cimcorp.misc.math;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.List;
 
-public class MeanStandardDeviation {
+public class MeanStandardDeviation implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private BigDecimal mean;
     private BigDecimal stdDeviation;

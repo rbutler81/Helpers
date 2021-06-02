@@ -30,4 +30,8 @@ public class Logger {
     public String getInstanceName() {
         return instanceName;
     }
+
+    public void stop(){
+       logBase.stopThread();
+    }
 }
