@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class LogWorkerThread implements Runnable {
 
@@ -23,6 +24,7 @@ public class LogWorkerThread implements Runnable {
     private String filePrefix;
     private String fileExtension;
     private boolean stopThread = false;
+    private ReentrantLock stopLock = new ReentrantLock(true);
 
     public LogWorkerThread(LogConfig config, Message<String> msg) throws IOException {
         this.config = config;
@@ -127,14 +129,25 @@ public class LogWorkerThread implements Runnable {
     }
 
     public LogWorkerThread stopThread() {
+        while (stopLock.isLocked()) {}
+        stopLock.lock();
         this.stopThread = true;
+        stopLock.unlock();
         return this;
+    }
+
+    public boolean isStopThread() {
+        while (stopLock.isLocked()) {}
+        stopLock.lock();
+        boolean r = stopThread;
+        stopLock.unlock();
+        return r;
     }
 
     @Override
     public void run() {
 
-        while (!stopThread) {
+        while (!isStopThread()) {
 
             try {
                 msg.waitUntilNotifiedOrListNotEmpty();
