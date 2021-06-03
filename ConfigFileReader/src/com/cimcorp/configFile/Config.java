@@ -15,6 +15,7 @@ import java.util.Map;
 public class Config {
 
     private Map<String,List<String>> params;
+    private List<String> iniFileAsStrings = new ArrayList<>();
     private String iniFile = null;
 
     public Map<String, List<String>> getParams() {
@@ -153,18 +154,31 @@ public class Config {
 
     public String getSingleParamAsString(String s) { return params.get(s).get(0); }
 
+    public List<String> getIniFileAsStrings() {
+        return iniFileAsStrings;
+    }
+
+    public Config setIniFileAsStrings(List<String> iniFile) {
+        this.iniFileAsStrings = iniFile;
+        return this;
+    }
+
     public static Config readIniFile(String str) throws IOException {
 
         Map<String,List<String>> configParams = new HashMap<>();
+        List<String> iniFileAsStrings = new ArrayList<>();
+
         try {
 
             BufferedReader br = new BufferedReader(new FileReader(str));
-            String line = br.readLine();
+            String line = "";
             List<String> p = new ArrayList<>();
 
 
             while (line != null) {
                 line = br.readLine();
+
+                iniFileAsStrings.add(line);
 
                 if ((line != null) && !line.startsWith("#") && line.contains("=") && (line.length() > 1)) {
 
@@ -192,7 +206,10 @@ public class Config {
             throw e;
         }
 
-        return new Config(configParams, str);
+        Config r = new Config(configParams, str);
+        r.setIniFileAsStrings(iniFileAsStrings);
+
+        return r;
 
     }
 
